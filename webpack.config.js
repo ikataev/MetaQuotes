@@ -1,5 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
 	mode: 'development',
@@ -11,6 +12,19 @@ module.exports = {
 				use: 'ts-loader',
 				exclude: /node_modules/,
 			},
+			{
+				test: /\.less$/i,
+				use: [
+					"style-loader",
+					"css-loader",
+					"less-loader",
+				],
+			},
+			{
+				test: /\.html$/i,
+				loader: "html-loader",
+			},
+
 		],
 	},
 	resolve: {
@@ -23,8 +37,15 @@ module.exports = {
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			title: 'Webpack Config',
+			title: 'MetaQuotes',
 		}),
+		new CopyWebpackPlugin({
+			patterns: [
+				{
+					from: 'data'
+				}
+			]
+		})
 	],
 	output: {
 		filename: '[name].[contenthash].js',
@@ -33,16 +54,6 @@ module.exports = {
 	},
 	optimization: {
 		moduleIds: 'deterministic',
-		runtimeChunk: 'single',
-		splitChunks: {
-			cacheGroups: {
-				vendor: {
-					test: /[\\/]node_modules[\\/]/,
-					name: 'vendors',
-					chunks: 'all',
-				},
-			},
-		},
 		usedExports: true,
 	},
 }
