@@ -5,23 +5,25 @@ import * as Style from "./Layout.less"
 import {Canvas} from "./canvas/Canvas";
 
 const tpl = `
-	<div id="caption"></div>
-	
-	<div class="${Style.flexRow}">
-		<div class="${Style.flexColumn}">
-			<div id="temperature-button"></div>
-			<div id="precipitation-button"></div>
-		</div>
+	<div class="${Style.flexColumn}">
+		<div id="caption"></div>
 		
-		<div class="${Style.flexColumn}">
-			<div class="${Style.flexRow}">
-				<div id="start-dropdown"></div>
-				<div id="end-dropdown"></div>			
+		<div class="${Style.flexRow}">
+			<div class="${Style.flexColumn}">
+				<div id="temperature-button"></div>
+				<div id="precipitation-button"></div>
 			</div>
 			
-			<div id="canvas"></div>	
-		</div>
-	</div>	
+			<div class="${Style.flexColumn}">
+				<div class="${Style.flexRow}">
+					<div id="start-dropdown"></div>
+					<div id="end-dropdown"></div>			
+				</div>
+				
+				<div id="canvas"></div>	
+			</div>
+		</div>	
+	</div>
 `
 
 export const Layout = (

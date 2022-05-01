@@ -1,15 +1,17 @@
 import {JSONLoader, JsonType} from "./utils/JSONLoader"
 
+export type Records = Array<{
+	timestamp: number
+	// year: number
+	value: number
+}>
+
 type Response = {
 	years: number[]
 	startYear: number
 	endYear: number
 
-	records: Array<{
-		timestamp: number
-		// year: number
-		value: number
-	}>
+	records: Records
 }
 
 export async function provider(jsonType: JsonType): Promise<Response> {
