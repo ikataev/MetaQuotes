@@ -1,6 +1,8 @@
 const path = require('path')
+const webpack = require("webpack")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 module.exports = {
 	mode: 'development',
@@ -15,16 +17,34 @@ module.exports = {
 			{
 				test: /\.less$/i,
 				use: [
-					"style-loader",
-					"css-loader",
-					"less-loader",
+					{
+						// loader: "style-loader",
+						loader: MiniCssExtractPlugin.loader,
+					},
+					{
+						loader: "css-loader",
+						options: {
+							esModule: true,
+							modules: {
+								namedExport: true,
+							},
+						}
+					},
+					{
+						loader: "less-loader",
+					},
 				],
+				exclude: /node_modules/,
 			},
 			{
 				test: /\.html$/i,
 				loader: "html-loader",
+				exclude: /node_modules/,
 			},
-
+			{
+				test: /\.worker\.js$/,
+				use: { loader: "worker-loader" },
+			},
 		],
 	},
 	resolve: {
@@ -45,7 +65,11 @@ module.exports = {
 					from: 'data'
 				}
 			]
-		})
+		}),
+		new MiniCssExtractPlugin({
+			filename: "[name].[contenthash].css",
+		}),
+		new webpack.HotModuleReplacementPlugin(),
 	],
 	output: {
 		filename: '[name].[contenthash].js',
