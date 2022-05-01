@@ -2,7 +2,7 @@ import {Caption} from "./caption/Caption"
 import {Button} from "./button/Button"
 import {Dropdown} from "./dropdown/Dropdown"
 import * as Style from "./Layout.less"
-import {Canvas} from "./canvas/Canvas";
+import {Canvas} from "./canvas/Canvas"
 
 const tpl = `
 	<div class="${Style.flexColumn}">
