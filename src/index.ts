@@ -4,6 +4,8 @@ import {Layout} from "./components/Layout"
 import {CanvasProvider} from "./modules/canvas/CanvasProvider"
 import {UIModel} from "./models/UIModel"
 import {UIController} from "./models/UIController"
+import {CanvasModel} from "./models/CanvasModel";
+import {CanvasController} from "./models/CanvasController";
 
 const uiModel = new UIModel()
 const uiController = new UIController(uiModel)
@@ -45,7 +47,11 @@ const {
 	// },
 )
 
-uiController.setCanvasProvider(new CanvasProvider(canvas))
+const canvasModel = new CanvasModel()
+const canvasController = new CanvasController(canvasModel, canvas)
+
+// uiController.setCanvasProvider(new CanvasProvider(canvas))
+uiController.setCanvasController(canvasController)
 uiController.setStartDropdownCallback(setStartDropdownCallback)
 uiController.setEndDropdownCallback(setEndDropdownCallback)
 

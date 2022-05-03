@@ -1,13 +1,12 @@
 import {IPoint} from "../interfaces/IPoint"
+import {CanvasObject} from "./CanvasObject"
 
-export class CanvasLine {
-	private readonly context: CanvasRenderingContext2D
-
+export class CanvasLine extends CanvasObject {
 	private start: IPoint
 	private end: IPoint
 
 	constructor(context: CanvasRenderingContext2D, start: IPoint, end: IPoint) {
-		this.context = context
+		super(context)
 		this.setCoordinates(start, end)
 	}
 

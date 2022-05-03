@@ -7,8 +7,8 @@ export type Record = {
 }
 
 export type Records = {
-	[x: string]: {
-		[x: string]: Record[]
+	[year: string]: {
+		[month: string]: Record[]
 	}
 }
 

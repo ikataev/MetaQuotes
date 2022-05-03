@@ -1,11 +1,13 @@
 import {ServiceMode, UIModel} from "./UIModel"
 import {provider} from "../modules/Providers"
-import {CanvasProvider} from "../modules/canvas/CanvasProvider";
+import {CanvasProvider} from "../modules/canvas/CanvasProvider"
+import {CanvasController} from "./CanvasController"
 
 export type setCallback = (options: Array<number>, selected: number) => void
 
 export class UIController {
 	private canvasProvider: CanvasProvider
+	private canvasController: CanvasController
 
 	private _setStartDropdownCallback: setCallback
 	private _setEndDropdownCallback: setCallback
@@ -27,9 +29,12 @@ export class UIController {
 		this.uiModel.setStartYear(startYear)
 		this.uiModel.setEndYear(endYear)
 
-		this.canvasProvider.setRecords(records, startYear, endYear)
-		this.canvasProvider.setRecords1(records1)
-		this.canvasProvider.draw()
+		// this.canvasProvider.setRecords(records, startYear, endYear)
+		// this.canvasProvider.setRecords1(records1)
+		// this.canvasProvider.draw()
+
+		this.canvasController.setRecords(records1)
+		this.canvasController.draw()
 
 		this.updateDropdowns()
 	}
@@ -56,6 +61,10 @@ export class UIController {
 
 	setEndDropdownCallback(callback: setCallback) {
 		this._setEndDropdownCallback = callback
+	}
+
+	setCanvasController(controller: CanvasController) {
+		this.canvasController = controller
 	}
 
 	setCanvasProvider(provider: CanvasProvider) {
