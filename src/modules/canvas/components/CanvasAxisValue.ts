@@ -1,6 +1,6 @@
 import {CanvasObject} from "./CanvasObject"
 import {IPoint} from "../interfaces/IPoint"
-import {CanvasLine} from "./CanvasLine";
+import {CanvasLine} from "./CanvasLine"
 
 const CROSS_SIZE = 10
 
@@ -28,6 +28,14 @@ export class CanvasAxisValue extends CanvasObject {
 
 	draw() {
 		this.lineVisual.draw()
+
+		this.context.fillText(
+			this.label,
+			Math.floor(this.crossPoint.x - CROSS_SIZE * 2),
+			Math.floor(this.crossPoint.y + CROSS_SIZE / 2)
+		)
+
+		console.log(this.crossPoint, Math.floor(this.crossPoint.x - CROSS_SIZE), Math.floor(this.crossPoint.y), CROSS_SIZE)
 	}
 
 }

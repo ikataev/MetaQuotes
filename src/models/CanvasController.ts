@@ -33,7 +33,9 @@ export class CanvasController {
 
 	draw() {
 		this.xAxisVisual.draw()
+
 		this.yAxisVisual.draw()
+		this.yAxisValuesVisual.forEach(visual => visual.draw())
 	}
 
 	private initXAxisVisuals() {
@@ -64,7 +66,14 @@ export class CanvasController {
 		)
 
 		this.yAxisValuesVisual = [
-			new CanvasAxisValue()
+			new CanvasAxisValue(
+				this.context,
+				{
+					x: OFFSET,
+					y: this.canvasModel.halfCanvasHeight,
+				},
+				'0'
+			)
 		]
 	}
 }
