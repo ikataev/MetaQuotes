@@ -1,5 +1,6 @@
-import {Records} from "../Providers"
+import {Record, Records} from "../Providers"
 import {CanvasLine} from "./components/CanvasLine"
+import {draw} from "./components/canvas-graph/CanvasGraph"
 
 const OFFSET = 20
 
@@ -9,7 +10,8 @@ export class CanvasProvider {
 	private canvasWidth: number
 	private canvasHeight: number
 
-	private records: Records
+	private records: Record[]
+	private records1: Records
 	private startYear: number
 	private endYear: number
 
@@ -22,14 +24,19 @@ export class CanvasProvider {
 		this.canvasWidth = canvas.width
 		this.canvasHeight = canvas.height
 
-		this.xLine = new CanvasLine(this.context, {x: OFFSET, y: this.canvasHeight - OFFSET}, {x: this.canvasWidth - OFFSET, y: this.canvasHeight - OFFSET})
+		// this.xLine = new CanvasLine(this.context, {x: OFFSET, y: this.canvasHeight - OFFSET}, {x: this.canvasWidth - OFFSET, y: this.canvasHeight - OFFSET})
+		this.xLine = new CanvasLine(this.context, {x: 0, y: this.canvasHeight / 2}, {x: this.canvasWidth, y: this.canvasHeight / 2})
 		this.yLine = new CanvasLine(this.context, {x: OFFSET, y: this.canvasHeight - OFFSET}, {x: OFFSET, y: OFFSET})
 	}
 
-	setRecords(records: Records, startYear: number, endYear: number) {
+	setRecords(records: Record[], startYear: number, endYear: number) {
 		this.records = records
 		this.startYear = startYear
 		this.endYear = endYear
+	}
+
+	setRecords1(records1: Records) {
+		this.records1 = records1
 	}
 
 	setStartYear(startYear: number) {
@@ -47,6 +54,19 @@ export class CanvasProvider {
 
 		this.xLine.draw()
 		this.yLine.draw()
+
+		const records = {}
+
+		Object.keys(this.records1).map(yearKey => {
+			const yearKeyAsNumber = parseInt(yearKey)
+
+			if (yearKeyAsNumber >= this.startYear && yearKeyAsNumber <= this.endYear) {
+				// @ts-ignore
+				records[yearKey] = this.records1[yearKey]
+			}
+		})
+
+		draw(this.context, records)
 	}
 
 }

@@ -1,6 +1,6 @@
 import * as Style from "./Dropdown.less"
 
-export const Dropdown = (onChange: (value: string | number) => void, values?: Array<string | number>, selected?: string | number) => {
+export const Dropdown = (onChange: (value: number) => void, values?: Array<number>, selected?: number) => {
 	const dropdown = document.createElement('select')
 	const setValues = (_values: Array<string | number>, _selected: string | number) => {
 		dropdown.innerHTML = ''
@@ -22,7 +22,7 @@ export const Dropdown = (onChange: (value: string | number) => void, values?: Ar
 
 	dropdown.className = Style.dropdown
 	dropdown.addEventListener('change', () => {
-		onChange(dropdown.value)
+		onChange(parseInt(dropdown.value))
 	})
 
 	// dropdown.addEventListener('scroll', (event) => {

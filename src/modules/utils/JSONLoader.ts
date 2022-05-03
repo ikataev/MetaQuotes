@@ -1,7 +1,4 @@
-export enum JsonType {
-	TEMPERATURE,
-	PRECIPITATION
-}
+import {ServiceMode} from "../../models/UIModel"
 
 type Response = Array<{
 	t: string
@@ -10,8 +7,8 @@ type Response = Array<{
 
 export class JSONLoader {
 
-	static async loadJson(jsonType: JsonType): Promise<Response> {
-		return fetch(`/${JsonType[jsonType]}.json`)
+	static async loadJson(jsonType: ServiceMode): Promise<Response> {
+		return fetch(`/${ServiceMode[jsonType]}.json`)
 			.then(response => response.json())
 	}
 

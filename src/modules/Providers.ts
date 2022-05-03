@@ -1,25 +1,32 @@
-import {JSONLoader, JsonType} from "./utils/JSONLoader"
+import {JSONLoader} from "./utils/JSONLoader"
+import {ServiceMode} from "../models/UIModel"
 
-export type Records = Array<{
+export type Record = {
 	timestamp: number
-	// year: number
 	value: number
-}>
+}
+
+export type Records = {
+	[x: string]: {
+		[x: string]: Record[]
+	}
+}
 
 type Response = {
 	years: number[]
 	startYear: number
 	endYear: number
 
-	records: Records
+	records: Record[]
+	records1: Records
 }
 
-export async function provider(jsonType: JsonType): Promise<Response> {
+export async function provider(jsonType: ServiceMode): Promise<Response> {
 	switch (jsonType) {
-		case JsonType.TEMPERATURE:
+		case ServiceMode.TEMPERATURE:
 			return temperaturesProvider()
 
-		case JsonType.PRECIPITATION:
+		case ServiceMode.PRECIPITATION:
 			//
 
 		default:
@@ -30,29 +37,40 @@ export async function provider(jsonType: JsonType): Promise<Response> {
 async function temperaturesProvider(): Promise<Response> {
 	let startYear = Infinity, endYear = -Infinity
 	let years: number[] = []
+	let yearsRecords: Records = {}
 
-	const json = await JSONLoader.loadJson(JsonType.TEMPERATURE)
+	const json = await JSONLoader.loadJson(ServiceMode.TEMPERATURE)
 	const records = json.map(t => {
 		const storedDate = new Date(t.t)
-		const storedYear = storedDate.getFullYear()
-		const UTCDate = Date.UTC(storedYear, storedDate.getFullYear(), storedDate.getDate())
+		const storedUTCYear = storedDate.getUTCFullYear()
+		const storedUTCMonth = storedDate.getUTCMonth()
+		const UTCDate = Date.UTC(storedUTCYear, storedUTCMonth, storedDate.getUTCDate())
+		const record = {
+			timestamp: UTCDate,
+			value: t.v
+		}
 
-		startYear = Math.min(startYear, storedYear)
-		endYear = Math.max(endYear, storedYear)
+		startYear = Math.min(startYear, storedUTCYear)
+		endYear = Math.max(endYear, storedUTCYear)
 
 		// console.log(storedYear)
 
-		if (!years.includes(storedYear)) {
-			years.push(storedYear)
+		if (!years.includes(storedUTCYear)) {
+			years.push(storedUTCYear)
 		}
 
-		return {
-			timestamp: UTCDate,
-			// date: storedDate,
-			// year: storedYear,
-			value: t.v
+		if (!yearsRecords[storedUTCYear]) {
+			yearsRecords[storedUTCYear] = {}
 		}
+
+		if (!yearsRecords[storedUTCYear][storedUTCMonth]) {
+			yearsRecords[storedUTCYear][storedUTCMonth] = []
+		}
+
+		yearsRecords[storedUTCYear][storedUTCMonth].push(record)
+
+		return record
 	})
 
-	return {records, years, startYear, endYear}
+	return {records, records1: yearsRecords, years, startYear, endYear}
 }

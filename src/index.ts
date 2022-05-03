@@ -1,32 +1,56 @@
 import "./style.less"
 import {Layout} from "./components/Layout"
-import {provider} from "./modules/Providers"
-import {JsonType} from "./modules/utils/JSONLoader"
 import {CanvasProvider} from "./modules/canvas/CanvasProvider"
+import {UIModel} from "./models/UIModel"
+import {UIController} from "./models/UIController";
 
 const canvasProvider = new CanvasProvider()
 
-const {layout, setStartDropdownValues, setEndDropdownValues, canvas} = Layout(
-	async () => {
-		const {records, years, startYear, endYear} = await provider(JsonType.TEMPERATURE)
+const uiModel = new UIModel()
+const uiController = new UIController(uiModel)
 
-		setStartDropdownValues(years, startYear)
-		setEndDropdownValues(years, endYear)
+const {
+	layout,
+	setStartDropdownValues: setStartDropdownCallback,
+	setEndDropdownValues: setEndDropdownCallback,
+	canvas
+} = Layout(
+	uiController.onTemperatureButtonClicked.bind(uiController),
+	uiController.onPrecipitationButtonClicked.bind(uiController),
+	uiController.onStartYearChanged.bind(uiController),
+	uiController.onEndYearChanged.bind(uiController),
 
-		canvasProvider.setRecords(records, startYear, endYear)
-		canvasProvider.draw()
-	},
-	() => {
-		console.log('Precipitation clicked')
-	},
-	(value: string) => {
-		console.log('Start changed', value)
-	},
-	(value: string) => {
-		console.log('End changed', value)
-	},
+	// async () => {
+	// 	const {records, records1, years, startYear, endYear} = await provider(JsonType.TEMPERATURE)
+	//
+	// 	setStartDropdownValues(years, startYear)
+	// 	setEndDropdownValues(years, endYear)
+	//
+	// 	canvasProvider.setRecords(records, startYear, endYear)
+	// 	canvasProvider.setRecords1(records1)
+	// 	canvasProvider.draw()
+	// },
+
+
+	// async (value: string) => {
+	// 	console.log('Start changed', value)
+	//
+	// 	const {records, records1, years, startYear, endYear} = await provider(ServiceMode.TEMPERATURE)
+	//
+	// 	canvasProvider.setRecords(records, Number(value), endYear)
+	// 	canvasProvider.setRecords1(records1)
+	// 	canvasProvider.draw()
+	// },
+	// (value: string) => {
+	// 	console.log('End changed', value)
+	// },
 )
+
+uiController.setStartDropdownCallback(setStartDropdownCallback)
+uiController.setEndDropdownCallback(setEndDropdownCallback)
 
 canvasProvider.setCanvas(canvas)
 
 document.getElementsByTagName('body')[0].appendChild(layout)
+
+uiController.init()
