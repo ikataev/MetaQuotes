@@ -1,10 +1,9 @@
 import "./style.less"
+
 import {Layout} from "./components/Layout"
 import {CanvasProvider} from "./modules/canvas/CanvasProvider"
 import {UIModel} from "./models/UIModel"
-import {UIController} from "./models/UIController";
-
-const canvasProvider = new CanvasProvider()
+import {UIController} from "./models/UIController"
 
 const uiModel = new UIModel()
 const uiController = new UIController(uiModel)
@@ -46,10 +45,9 @@ const {
 	// },
 )
 
+uiController.setCanvasProvider(new CanvasProvider(canvas))
 uiController.setStartDropdownCallback(setStartDropdownCallback)
 uiController.setEndDropdownCallback(setEndDropdownCallback)
-
-canvasProvider.setCanvas(canvas)
 
 document.getElementsByTagName('body')[0].appendChild(layout)
 

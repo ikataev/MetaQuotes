@@ -1,9 +1,11 @@
 import {ServiceMode, UIModel} from "./UIModel"
 import {provider} from "../modules/Providers"
+import {CanvasProvider} from "../modules/canvas/CanvasProvider";
 
 export type setCallback = (options: Array<number>, selected: number) => void
 
 export class UIController {
+	private canvasProvider: CanvasProvider
 
 	private _setStartDropdownCallback: setCallback
 	private _setEndDropdownCallback: setCallback
@@ -25,18 +27,11 @@ export class UIController {
 		this.uiModel.setStartYear(startYear)
 		this.uiModel.setEndYear(endYear)
 
+		this.canvasProvider.setRecords(records, startYear, endYear)
+		this.canvasProvider.setRecords1(records1)
+		this.canvasProvider.draw()
+
 		this.updateDropdowns()
-
-
-		// 	const {records, records1, years, startYear, endYear} = await provider(JsonType.TEMPERATURE)
-		//
-		// 	setStartDropdownValues(years, startYear)
-		// 	setEndDropdownValues(years, endYear)
-		//
-		// 	canvasProvider.setRecords(records, startYear, endYear)
-		// 	canvasProvider.setRecords1(records1)
-		// 	canvasProvider.draw()
-		// },
 	}
 
 	async onPrecipitationButtonClicked() {
@@ -61,6 +56,10 @@ export class UIController {
 
 	setEndDropdownCallback(callback: setCallback) {
 		this._setEndDropdownCallback = callback
+	}
+
+	setCanvasProvider(provider: CanvasProvider) {
+		this.canvasProvider = provider
 	}
 
 	private updateDropdowns() {

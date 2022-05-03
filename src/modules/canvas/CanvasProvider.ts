@@ -18,7 +18,7 @@ export class CanvasProvider {
 	private xLine: CanvasLine
 	private yLine: CanvasLine
 
-	setCanvas(canvas: HTMLCanvasElement) {
+	constructor(canvas: HTMLCanvasElement) {
 		this.canvas = canvas
 		this.context = canvas.getContext('2d')
 		this.canvasWidth = canvas.width
