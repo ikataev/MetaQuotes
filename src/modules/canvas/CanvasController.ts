@@ -1,11 +1,11 @@
-import {DataProvider} from '../data/DataProvider'
+import {DataHelper} from '../data/DataHelper'
+import {DataProvider, RawRecord} from '../data/DataProvider'
 import {Records} from '../data/DataTransformer'
 import {IUIModelReadonly} from '../ui/UIModel'
 import {CanvasModel} from './CanvasModel'
-import {CanvasAxisValue} from './components/CanvasAxisValue'
 import {CanvasLine} from './components/CanvasLine'
-
-const OFFSET = 24
+import {CanvasYAxisPoint} from './components/CanvasYAxisPoint'
+import {PLOT_AXIS_OFFSET, PLOT_OFFSET, VERTICAL_AXIS_POINT_DASH_SIZE, VERTICAL_AXIS_X_POSITION} from './constants'
 
 export class CanvasController {
     private readonly canvasModel: CanvasModel
@@ -13,11 +13,12 @@ export class CanvasController {
     private readonly context: CanvasRenderingContext2D
 
     private records: Records
+    private rawRecords: RawRecord[]
 
     private xAxisVisual: CanvasLine
 
     private yAxisVisual: CanvasLine
-    private yAxisValuesVisual: CanvasAxisValue[]
+    private yAxisValuesVisual: CanvasYAxisPoint[]
 
     constructor(canvasModel: CanvasModel, canvas: HTMLCanvasElement) {
         this.canvasModel = canvasModel
@@ -29,21 +30,28 @@ export class CanvasController {
     // Instead of EventBus implementation, will call method directly
     async onUIChanged(uiModel: IUIModelReadonly) {
         console.info('[CanvasController] onUIChanged')
-        const {transformedRecords} = await DataProvider.get(uiModel.mode)
-        const {records} = transformedRecords
+        const {rawRecords, transformedRecords} = await DataProvider.get(uiModel.mode)
+        const {records, minValue, maxValue} = transformedRecords
+        const extractedRecords = DataHelper.extractRange(records, uiModel.startYear, uiModel.endYear)
 
-        this.setRecords(records)
+        this.initXAxisVisual()
+
+        this.initYAxisVisual()
+        this.initYAxisPointsVisuals(minValue, maxValue)
+
+        this.setRecords(rawRecords, extractedRecords)
         this.draw()
     }
 
-    setRecords(records: Records) {
+    private setRecords(rawRecords: RawRecord[], records: Records) {
         this.records = records
+        this.rawRecords = rawRecords
 
-        this.initXAxisVisuals()
-        this.initYAxisVisuals()
+        // this.initXAxisVisual()
+        // this.initXAxisValuesVisuals()
     }
 
-    draw() {
+    private draw() {
         this.context.clearRect(0, 0, this.canvasModel.canvasWidth, this.canvasModel.canvasHeight)
 
         this.xAxisVisual.draw()
@@ -52,42 +60,65 @@ export class CanvasController {
         this.yAxisValuesVisual.forEach((visual) => visual.draw())
     }
 
-    private initXAxisVisuals() {
+    private initXAxisVisual() {
         this.xAxisVisual = new CanvasLine(
             this.context,
             {
-                x: OFFSET,
-                y: this.canvasModel.halfCanvasHeight,
+                x: VERTICAL_AXIS_X_POSITION + VERTICAL_AXIS_POINT_DASH_SIZE / 2,
+                y: this.canvasModel.canvasHeight - PLOT_OFFSET - PLOT_AXIS_OFFSET,
             },
             {
-                x: this.canvasModel.canvasWidth - OFFSET,
-                y: this.canvasModel.halfCanvasHeight,
-            }
+                x: this.canvasModel.canvasWidth - PLOT_OFFSET,
+                y: this.canvasModel.canvasHeight - PLOT_OFFSET - PLOT_AXIS_OFFSET,
+            },
         )
     }
 
-    private initYAxisVisuals() {
+    private initXAxisValuesVisuals() {}
+
+    private initYAxisVisual() {
         this.yAxisVisual = new CanvasLine(
             this.context,
             {
-                x: OFFSET,
-                y: OFFSET,
+                x: VERTICAL_AXIS_X_POSITION,
+                y: PLOT_OFFSET,
             },
             {
-                x: OFFSET,
-                y: this.canvasModel.canvasHeight - OFFSET,
-            }
+                x: VERTICAL_AXIS_X_POSITION,
+                y: this.canvasModel.canvasHeight - PLOT_OFFSET,
+            },
         )
+    }
+
+    private initYAxisPointsVisuals(minValue: number, maxValue: number) {
+        const midValue = (minValue + maxValue) / 2
+        const midAboveMidValue = (maxValue + midValue) / 2
+        const midBelowMidValue = (minValue + midValue) / 2
+
+        const halfCanvasHeight = this.canvasModel.halfCanvasHeight
+        const midPositionOffset = (halfCanvasHeight - (PLOT_OFFSET + PLOT_AXIS_OFFSET)) / 2
 
         this.yAxisValuesVisual = [
-            new CanvasAxisValue(
-                this.context,
-                {
-                    x: OFFSET,
-                    y: this.canvasModel.halfCanvasHeight,
-                },
-                '9999',
-            ),
+            new CanvasYAxisPoint(this.context, Math.round(maxValue).toString(), {
+                x: VERTICAL_AXIS_X_POSITION,
+                y: PLOT_OFFSET + PLOT_AXIS_OFFSET,
+            }),
+            new CanvasYAxisPoint(this.context, Math.round(midAboveMidValue).toString(), {
+                x: VERTICAL_AXIS_X_POSITION,
+                y: halfCanvasHeight - midPositionOffset,
+            }),
+            new CanvasYAxisPoint(this.context, Math.round(midValue).toString(), {
+                x: VERTICAL_AXIS_X_POSITION,
+                y: halfCanvasHeight,
+            }),
+            new CanvasYAxisPoint(this.context, Math.round(midBelowMidValue).toString(), {
+                x: VERTICAL_AXIS_X_POSITION,
+                y: halfCanvasHeight + midPositionOffset,
+            }),
+            new CanvasYAxisPoint(this.context, Math.round(minValue).toString(), {
+                x: VERTICAL_AXIS_X_POSITION,
+                y: this.canvasModel.canvasHeight - PLOT_OFFSET - PLOT_AXIS_OFFSET,
+            }),
         ]
     }
 }

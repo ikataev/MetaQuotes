@@ -11,9 +11,7 @@ export interface IUIModelReadonly {
     readonly endYears: number[]
 }
 
-export interface IUIModel extends IUIModelReadonly {
-
-}
+export interface IUIModel extends IUIModelReadonly {}
 
 export class UIModel implements IUIModel {
     private _years: number[]
@@ -55,7 +53,7 @@ export class UIModel implements IUIModel {
     setStartYear(startYear: number): void {
         if (this._endYear && startYear > this._endYear) {
             throw new Error(
-                `You can't set start year more then end, startYear: ${startYear}, endYear: ${this._endYear}`
+                `You can't set start year more then end, startYear: ${startYear}, endYear: ${this._endYear}`,
             )
         }
 
@@ -65,7 +63,7 @@ export class UIModel implements IUIModel {
     setEndYear(endYear: number): void {
         if (this._startYear && endYear < this._startYear) {
             throw new Error(
-                `You can't set end year less then start, startYear: ${this._startYear}, endYear: ${endYear}`
+                `You can't set end year less then start, startYear: ${this._startYear}, endYear: ${endYear}`,
             )
         }
 

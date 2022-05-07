@@ -28,7 +28,7 @@ export class CanvasProvider {
         this.xLine = new CanvasLine(
             this.context,
             {x: 0, y: this.canvasHeight / 2},
-            {x: this.canvasWidth, y: this.canvasHeight / 2}
+            {x: this.canvasWidth, y: this.canvasHeight / 2},
         )
         this.yLine = new CanvasLine(this.context, {x: OFFSET, y: this.canvasHeight - OFFSET}, {x: OFFSET, y: OFFSET})
     }

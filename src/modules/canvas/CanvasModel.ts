@@ -12,48 +12,43 @@ type AxisValue = {
 
 export class CanvasModel {
     private _canvasWidth: number
+    private _canvasHeight: number
+    private _halfCanvasWidth: number
+    private _halfCanvasHeight: number
+
+    private _xAxis: AxisCoordinates
+    private _xAxisValues: AxisValue[]
+
+    private _yAxis: AxisCoordinates
+    private _yAxisValues: AxisValue[]
 
     get canvasWidth(): number {
         return this._canvasWidth
     }
 
-    private _canvasHeight: number
-
     get canvasHeight(): number {
         return this._canvasHeight
     }
-
-    private _halfCanvasWidth: number
 
     get halfCanvasWidth(): number {
         return this._halfCanvasWidth
     }
 
-    private _halfCanvasHeight: number
-
     get halfCanvasHeight(): number {
         return this._halfCanvasHeight
     }
-
-    private _xAxis: AxisCoordinates
 
     get xAxis(): AxisCoordinates {
         return this._xAxis
     }
 
-    private _xAxisValues: AxisValue[]
-
     get xAxisValues(): AxisValue[] {
         return this._xAxisValues
     }
 
-    private _yAxis: AxisCoordinates
-
     get yAxis(): AxisCoordinates {
         return this._yAxis
     }
-
-    private _yAxisValues: AxisValue[]
 
     get yAxisValues(): AxisValue[] {
         return this._yAxisValues

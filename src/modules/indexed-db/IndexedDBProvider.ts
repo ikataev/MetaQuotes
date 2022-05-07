@@ -1,12 +1,9 @@
 export class IndexedDBProvider {
     private database: IDBOpenDBRequest
 
-    constructor(private name: string, private version = 1) {
-    }
+    constructor(private name: string, private version = 1) {}
 
-    static getData(dbName: string, tableName: string) {
-
-    }
+    static getData(dbName: string, tableName: string) {}
 
     openDatabase(): IDBOpenDBRequest {
         if (!this.database) {

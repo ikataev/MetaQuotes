@@ -40,8 +40,6 @@ export class DataProvider {
             // IndexedDBProvider.save(records)
         }
 
-        console.log(records)
-
         return records
     }
 

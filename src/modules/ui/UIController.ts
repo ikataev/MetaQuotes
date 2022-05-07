@@ -9,8 +9,7 @@ export class UIController {
     private _setStartDropdownCallback: DropdownSetValuesCallback
     private _setEndDropdownCallback: DropdownSetValuesCallback
 
-    constructor(private uiModel: UIModel) {
-    }
+    constructor(private uiModel: UIModel) {}
 
     async init() {
         await this.onTemperatureButtonClicked()
@@ -59,7 +58,7 @@ export class UIController {
         this.canvasController.onUIChanged(this.uiModel)
     }
 
-    private setDropdowns(year: { startYear?: number, endYear?: number }) {
+    private setDropdowns(year: {startYear?: number; endYear?: number}) {
         const model = this.uiModel
 
         this._setStartDropdownCallback(model.startYears, year.startYear || model.startYear)

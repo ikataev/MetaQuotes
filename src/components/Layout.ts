@@ -38,7 +38,7 @@ export const Layout = (
     onTemperatureButtonClicked: ButtonClicked,
     onPrecipitationButtonClicked: ButtonClicked,
     onStartDropdownChanged: DropdownValueChanged,
-    onEndDropdownChanged: DropdownValueChanged
+    onEndDropdownChanged: DropdownValueChanged,
 ): LayoutResponse => {
     const caption = Caption('Weather service archive')
     const temperatureButton = Button('Temperature', onTemperatureButtonClicked)

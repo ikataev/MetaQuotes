@@ -5,10 +5,12 @@ export type Record = {
     value: number
 }
 
+export type YearObject = {
+    [month: string]: Record[]
+}
+
 export type Records = {
-    [year: string]: {
-        [month: string]: Record[]
-    }
+    [year: string]: YearObject
 }
 
 export type Response = {
@@ -16,53 +18,58 @@ export type Response = {
     startYear: number
     endYear: number
 
+    maxValue: number
+    minValue: number
+
     records: Records
 }
 
 export class DataTransformer {
 
-    static transform(records: RawRecord[]): Response {
+    static transform(rawRecords: RawRecord[]): Response {
         let startYear = Infinity,
-            endYear = -Infinity
+            endYear = -Infinity,
+            maxValue = -Infinity,
+            minValue = Infinity
         let years: number[] = []
-        let yearsRecords: Records = {}
+        let records: Records = {}
 
         // const json = await JSONLoader.loadJson(ServiceMode.TEMPERATURE)
-        records.forEach((t) => {
+        rawRecords.forEach((t) => {
             const storedDate = new Date(t.t)
             const storedUTCYear = storedDate.getUTCFullYear()
             const storedUTCMonth = storedDate.getUTCMonth()
             const UTCDate = Date.UTC(storedUTCYear, storedUTCMonth, storedDate.getUTCDate())
+            const storedValue = t.v
             const record = {
                 timestamp: UTCDate,
-                value: t.v,
+                value: storedValue,
             }
 
             startYear = Math.min(startYear, storedUTCYear)
             endYear = Math.max(endYear, storedUTCYear)
 
-            // console.log(storedYear)
+            maxValue = Math.max(maxValue, storedValue)
+            minValue = Math.min(minValue, storedValue)
 
             if (!years.includes(storedUTCYear)) {
                 years.push(storedUTCYear)
             }
 
-            if (!yearsRecords[storedUTCYear]) {
-                yearsRecords[storedUTCYear] = {}
+            if (!records[storedUTCYear]) {
+                records[storedUTCYear] = {}
             }
 
-            if (!yearsRecords[storedUTCYear][storedUTCMonth]) {
-                yearsRecords[storedUTCYear][storedUTCMonth] = []
+            if (!records[storedUTCYear][storedUTCMonth]) {
+                records[storedUTCYear][storedUTCMonth] = []
             }
 
-            yearsRecords[storedUTCYear][storedUTCMonth].push(record)
+            records[storedUTCYear][storedUTCMonth].push(record)
 
             return record
         })
 
-        console.log(records, years, startYear, endYear)
-
-        return {records: yearsRecords, years, startYear, endYear}
+        return {records, years, startYear, endYear, maxValue, minValue}
     }
 
 }

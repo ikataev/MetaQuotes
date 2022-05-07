@@ -29,12 +29,6 @@ export function draw(context: CanvasRenderingContext2D, records1: Records, point
         halfHeight: canvas.height / 2,
     }
 
-    // const xOffset = canvasCoordinates.width / points
-    // const halfXOffset = xOffset / 2
-
-    // console.log('draw', canvasCoordinates.width, canvasCoordinates.height)
-    //
-
     let xOffset = 0
 
     context.beginPath()
@@ -51,8 +45,6 @@ export function draw(context: CanvasRenderingContext2D, records1: Records, point
             const medianValue = median(values)
 
             context.lineTo(xOffset, canvasCoordinates.halfHeight - medianValue)
-
-            console.log(maxValue, minValue, medianValue)
 
             xOffset += 2
         })
