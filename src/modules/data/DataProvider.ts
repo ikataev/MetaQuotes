@@ -31,6 +31,7 @@ export class DataProvider {
         return CACHE[serviceMode]
     }
 
+    // todo Need to implement IndexedDB
     private static async loadData(mode: ServiceMode): Promise<RawRecord[]> {
         // let records = IndexedDBProvider.get()
         let records: RawRecord[] = []

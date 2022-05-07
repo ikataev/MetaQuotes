@@ -1,5 +1,5 @@
 import {DataHelper} from '../data/DataHelper'
-import {DataProvider, RawRecord} from '../data/DataProvider'
+import {DataProvider} from '../data/DataProvider'
 import {Records} from '../data/DataTransformer'
 import {IUIModelReadonly} from '../ui/UIModel'
 import {CanvasModel} from './CanvasModel'
@@ -13,7 +13,6 @@ export class CanvasController {
     private readonly context: CanvasRenderingContext2D
 
     private records: Records
-    private rawRecords: RawRecord[]
 
     private xAxisVisual: CanvasLine
 
@@ -30,39 +29,40 @@ export class CanvasController {
     // Instead of EventBus implementation, will call method directly
     async onUIChanged(uiModel: IUIModelReadonly) {
         console.info('[CanvasController] onUIChanged')
-        const {rawRecords, transformedRecords} = await DataProvider.get(uiModel.mode)
-        const {records, minValue, maxValue} = transformedRecords
-        const extractedRecords = DataHelper.extractRange(records, uiModel.startYear, uiModel.endYear)
-
-        this.initXAxisVisual()
+        const {transformedRecords} = await DataProvider.get(uiModel.mode)
+        const {records, minValue, maxValue} = DataHelper.extractRange(transformedRecords.records, uiModel.startYear, uiModel.endYear)
 
         this.initYAxisVisual()
         this.initYAxisPointsVisuals(minValue, maxValue)
 
-        this.setRecords(rawRecords, extractedRecords)
+        this.initXAxisVisual()
+
+        this.setRecords(records)
         this.draw()
     }
 
-    private setRecords(rawRecords: RawRecord[], records: Records) {
+    private setRecords(records: Records) {
         this.records = records
-        this.rawRecords = rawRecords
 
         // this.initXAxisVisual()
         // this.initXAxisValuesVisuals()
     }
 
     private draw() {
-        // Clear canvas
-        this.context.save()
-        this.context.fillStyle = '#ffffff'
-        this.context.rect(0, 0, this.canvasModel.canvasWidth, this.canvasModel.canvasHeight)
-        this.context.fill()
-        this.context.restore()
+        this.clearCanvas()
 
         this.xAxisVisual.draw()
 
         this.yAxisVisual.draw()
         this.yAxisValuesVisual.forEach((visual) => visual.draw())
+    }
+
+    private clearCanvas() {
+        this.context.save()
+        this.context.fillStyle = '#ffffff'
+        this.context.rect(0, 0, this.canvasModel.canvasWidth, this.canvasModel.canvasHeight)
+        this.context.fill()
+        this.context.restore()
     }
 
     private initXAxisVisual() {
