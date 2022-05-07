@@ -3,20 +3,34 @@ export enum ServiceMode {
     PRECIPITATION,
 }
 
-export class UIModel {
-    private _mode = ServiceMode.TEMPERATURE
+export interface IUIModelReadonly {
+    readonly mode: ServiceMode
+    readonly startYear: number
+    readonly endYear: number
+    readonly startYears: number[]
+    readonly endYears: number[]
+}
 
+export interface IUIModel extends IUIModelReadonly {
+
+}
+
+export class UIModel implements IUIModel {
     private _years: number[]
-    private _startYear: number
-    private _endYear: number
+
+    private _mode = ServiceMode.TEMPERATURE
 
     get mode(): ServiceMode {
         return this._mode
     }
 
+    private _startYear: number
+
     get startYear(): number {
         return this._startYear
     }
+
+    private _endYear: number
 
     get endYear(): number {
         return this._endYear

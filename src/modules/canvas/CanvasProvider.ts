@@ -1,6 +1,6 @@
-import {Record, Records} from "../Providers"
-import {CanvasLine} from "./components/CanvasLine"
-import {draw} from "./components/canvas-graph/CanvasGraph"
+import {Record, Records} from '../data/DataTransformer'
+import {draw} from './components/canvas-graph/CanvasGraph'
+import {CanvasLine} from './components/CanvasLine'
 
 const OFFSET = 20
 
@@ -20,7 +20,7 @@ export class CanvasProvider {
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas
-        this.context = canvas.getContext("2d")
+        this.context = canvas.getContext('2d')
         this.canvasWidth = canvas.width
         this.canvasHeight = canvas.height
 
@@ -52,7 +52,7 @@ export class CanvasProvider {
     }
 
     draw() {
-        this.context.fillStyle = "#ffffff"
+        this.context.fillStyle = '#ffffff'
         this.context.rect(0, 0, this.canvasWidth, this.canvasWidth)
         this.context.fill()
 

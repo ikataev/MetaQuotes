@@ -1,6 +1,6 @@
-import {CanvasObject} from "./CanvasObject"
-import {IPoint} from "../interfaces/IPoint"
-import {CanvasLine} from "./CanvasLine"
+import {IPoint} from '../interfaces/IPoint'
+import {CanvasLine} from './CanvasLine'
+import {CanvasObject} from './CanvasObject'
 
 const CROSS_SIZE = 10
 

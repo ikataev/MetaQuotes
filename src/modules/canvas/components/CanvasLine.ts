@@ -1,5 +1,5 @@
-import {IPoint} from "../interfaces/IPoint"
-import {CanvasObject} from "./CanvasObject"
+import {IPoint} from '../interfaces/IPoint'
+import {CanvasObject} from './CanvasObject'
 
 export class CanvasLine extends CanvasObject {
     private start: IPoint

@@ -1,4 +1,4 @@
-import {ServiceMode} from "../../models/UIModel"
+import {ServiceMode} from '../ui/UIModel'
 
 type Response = Array<{
     t: string

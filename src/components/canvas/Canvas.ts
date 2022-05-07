@@ -1,7 +1,7 @@
-import * as Style from "./Canvas.less"
+import * as Style from './Canvas.less'
 
 export const Canvas = (id: string, width: number, height: number): HTMLCanvasElement => {
-    const canvas = document.createElement("canvas")
+    const canvas = document.createElement('canvas')
 
     canvas.id = id
     canvas.width = width

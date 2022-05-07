@@ -1,14 +1,16 @@
-import {CanvasModel} from "./CanvasModel"
-import {Records} from "../modules/Providers"
-import {CanvasLine} from "../modules/canvas/components/CanvasLine"
-import {CanvasAxisValue} from "../modules/canvas/components/CanvasAxisValue"
+import {DataProvider} from '../data/DataProvider'
+import {Records} from '../data/DataTransformer'
+import {IUIModelReadonly} from '../ui/UIModel'
+import {CanvasModel} from './CanvasModel'
+import {CanvasAxisValue} from './components/CanvasAxisValue'
+import {CanvasLine} from './components/CanvasLine'
 
 const OFFSET = 24
 
 export class CanvasController {
-    private canvasModel: CanvasModel
-    private canvas: HTMLCanvasElement
-    private context: CanvasRenderingContext2D
+    private readonly canvasModel: CanvasModel
+    private readonly canvas: HTMLCanvasElement
+    private readonly context: CanvasRenderingContext2D
 
     private records: Records
 
@@ -20,8 +22,18 @@ export class CanvasController {
     constructor(canvasModel: CanvasModel, canvas: HTMLCanvasElement) {
         this.canvasModel = canvasModel
         this.canvas = canvas
-        this.context = canvas.getContext("2d")
+        this.context = canvas.getContext('2d')
         this.canvasModel.setSize(canvas.width, canvas.height)
+    }
+
+    // Instead of EventBus implementation, will call method directly
+    async onUIChanged(uiModel: IUIModelReadonly) {
+        console.info('[CanvasController] onUIChanged')
+        const {transformedRecords} = await DataProvider.get(uiModel.mode)
+        const {records} = transformedRecords
+
+        // this.canvasModel.setSize()
+
     }
 
     setRecords(records: Records) {
@@ -72,7 +84,7 @@ export class CanvasController {
                     x: OFFSET,
                     y: this.canvasModel.halfCanvasHeight,
                 },
-                "0"
+                '0',
             ),
         ]
     }

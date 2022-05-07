@@ -6,6 +6,6 @@ type Data = {
     type: IndexedDBWorkerCommands
 }
 
-addEventListener("message", (message) => {
-    console.log("IndexedDBWorker", message)
+addEventListener('message', (message) => {
+    console.log('IndexedDBWorker', message)
 })

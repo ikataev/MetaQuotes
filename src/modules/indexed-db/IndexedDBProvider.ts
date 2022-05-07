@@ -1,17 +1,22 @@
-export class IndexedDB {
+export class IndexedDBProvider {
     private database: IDBOpenDBRequest
 
-    constructor(private name: string, private version = 1) {}
+    constructor(private name: string, private version = 1) {
+    }
+
+    static getData(dbName: string, tableName: string) {
+
+    }
 
     openDatabase(): IDBOpenDBRequest {
         if (!this.database) {
             this.database = window.indexedDB.open(this.name, this.version)
 
-            this.database.addEventListener("upgradeneeded", (event: IDBVersionChangeEvent) =>
-                this.onUpgradeNeeded(event)
+            this.database.addEventListener('upgradeneeded', (event: IDBVersionChangeEvent) =>
+                this.onUpgradeNeeded(event),
             )
-            this.database.addEventListener("error", (event: Event) => this.onOpenFailed(event))
-            this.database.addEventListener("success", (event: Event) => this.onOpenSuccess(event))
+            this.database.addEventListener('error', (event: Event) => this.onOpenFailed(event))
+            this.database.addEventListener('success', (event: Event) => this.onOpenSuccess(event))
         }
 
         return this.database
@@ -32,14 +37,14 @@ export class IndexedDB {
     clearTable(tableName: string) {}
 
     private onOpenFailed(event: Event) {
-        console.log("[IndexedDB] onOpenFailed", event, this.database)
+        console.log('[IndexedDBProvider] onOpenFailed', event, this.database)
     }
 
     private onOpenSuccess(event: Event) {
-        console.log("[IndexedDB] onOpenSuccess", event, this.database)
+        console.log('[IndexedDBProvider] onOpenSuccess', event, this.database)
     }
 
     private onUpgradeNeeded(event: IDBVersionChangeEvent) {
-        console.log("[IndexedDB] onOpenSuccess", event, this.database)
+        console.log('[IndexedDBProvider] onOpenSuccess', event, this.database)
     }
 }
