@@ -18,7 +18,7 @@ export interface IUIModel extends IUIModelReadonly {
 export class UIModel implements IUIModel {
     private _years: number[]
 
-    private _mode = ServiceMode.TEMPERATURE
+    private _mode: ServiceMode //= ServiceMode.TEMPERATURE
 
     get mode(): ServiceMode {
         return this._mode

@@ -18,14 +18,18 @@ export class UIController {
 
     async onTemperatureButtonClicked() {
         console.info('[UiController] onTemperatureButtonClicked')
-        this.uiModel.setMode(ServiceMode.TEMPERATURE)
-        this.onButtonClicked()
+        if (this.uiModel.mode !== ServiceMode.TEMPERATURE) {
+            this.uiModel.setMode(ServiceMode.TEMPERATURE)
+            this.onButtonClicked()
+        }
     }
 
     async onPrecipitationButtonClicked() {
         console.info('[UiController] onPrecipitationButtonClicked')
-        this.uiModel.setMode(ServiceMode.PRECIPITATION)
-        this.onButtonClicked()
+        if (this.uiModel.mode !== ServiceMode.PRECIPITATION) {
+            this.uiModel.setMode(ServiceMode.PRECIPITATION)
+            this.onButtonClicked()
+        }
     }
 
     async onStartYearChanged(startYear: number) {

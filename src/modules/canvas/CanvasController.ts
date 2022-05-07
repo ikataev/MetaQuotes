@@ -32,8 +32,8 @@ export class CanvasController {
         const {transformedRecords} = await DataProvider.get(uiModel.mode)
         const {records} = transformedRecords
 
-        // this.canvasModel.setSize()
-
+        this.setRecords(records)
+        this.draw()
     }
 
     setRecords(records: Records) {
@@ -44,6 +44,8 @@ export class CanvasController {
     }
 
     draw() {
+        this.context.clearRect(0, 0, this.canvasModel.canvasWidth, this.canvasModel.canvasHeight)
+
         this.xAxisVisual.draw()
 
         this.yAxisVisual.draw()
@@ -84,7 +86,7 @@ export class CanvasController {
                     x: OFFSET,
                     y: this.canvasModel.halfCanvasHeight,
                 },
-                '0',
+                '9999',
             ),
         ]
     }
