@@ -4,7 +4,7 @@ import {Records} from '../data/DataTransformer'
 import {IUIModelReadonly} from '../ui/UIModel'
 import {CanvasModel} from './CanvasModel'
 import {CanvasLine} from './components/CanvasLine'
-import {CanvasYAxisPoint} from './components/CanvasYAxisPoint'
+import {CanvasYAxis} from './components/y-axis/CanvasYAxis'
 import {PLOT_AXIS_OFFSET, PLOT_OFFSET, VERTICAL_AXIS_POINT_DASH_SIZE, VERTICAL_AXIS_X_POSITION} from './constants'
 
 export class CanvasController {
@@ -18,7 +18,7 @@ export class CanvasController {
     private xAxisVisual: CanvasLine
 
     private yAxisVisual: CanvasLine
-    private yAxisValuesVisual: CanvasYAxisPoint[]
+    private yAxisValuesVisual: CanvasYAxis[]
 
     constructor(canvasModel: CanvasModel, canvas: HTMLCanvasElement) {
         this.canvasModel = canvasModel
@@ -52,7 +52,12 @@ export class CanvasController {
     }
 
     private draw() {
-        this.context.clearRect(0, 0, this.canvasModel.canvasWidth, this.canvasModel.canvasHeight)
+        // Clear canvas
+        this.context.save()
+        this.context.fillStyle = '#ffffff'
+        this.context.rect(0, 0, this.canvasModel.canvasWidth, this.canvasModel.canvasHeight)
+        this.context.fill()
+        this.context.restore()
 
         this.xAxisVisual.draw()
 
@@ -99,23 +104,23 @@ export class CanvasController {
         const midPositionOffset = (halfCanvasHeight - (PLOT_OFFSET + PLOT_AXIS_OFFSET)) / 2
 
         this.yAxisValuesVisual = [
-            new CanvasYAxisPoint(this.context, Math.round(maxValue).toString(), {
+            new CanvasYAxis(this.context, Math.round(maxValue).toString(), {
                 x: VERTICAL_AXIS_X_POSITION,
                 y: PLOT_OFFSET + PLOT_AXIS_OFFSET,
             }),
-            new CanvasYAxisPoint(this.context, Math.round(midAboveMidValue).toString(), {
+            new CanvasYAxis(this.context, Math.round(midAboveMidValue).toString(), {
                 x: VERTICAL_AXIS_X_POSITION,
                 y: halfCanvasHeight - midPositionOffset,
             }),
-            new CanvasYAxisPoint(this.context, Math.round(midValue).toString(), {
+            new CanvasYAxis(this.context, Math.round(midValue).toString(), {
                 x: VERTICAL_AXIS_X_POSITION,
                 y: halfCanvasHeight,
             }),
-            new CanvasYAxisPoint(this.context, Math.round(midBelowMidValue).toString(), {
+            new CanvasYAxis(this.context, Math.round(midBelowMidValue).toString(), {
                 x: VERTICAL_AXIS_X_POSITION,
                 y: halfCanvasHeight + midPositionOffset,
             }),
-            new CanvasYAxisPoint(this.context, Math.round(minValue).toString(), {
+            new CanvasYAxis(this.context, Math.round(minValue).toString(), {
                 x: VERTICAL_AXIS_X_POSITION,
                 y: this.canvasModel.canvasHeight - PLOT_OFFSET - PLOT_AXIS_OFFSET,
             }),

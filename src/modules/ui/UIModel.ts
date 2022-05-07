@@ -15,20 +15,18 @@ export interface IUIModel extends IUIModelReadonly {}
 
 export class UIModel implements IUIModel {
     private _years: number[]
+    private _startYear: number
+    private _endYear: number
 
-    private _mode: ServiceMode //= ServiceMode.TEMPERATURE
+    private _mode: ServiceMode
 
     get mode(): ServiceMode {
         return this._mode
     }
 
-    private _startYear: number
-
     get startYear(): number {
         return this._startYear
     }
-
-    private _endYear: number
 
     get endYear(): number {
         return this._endYear

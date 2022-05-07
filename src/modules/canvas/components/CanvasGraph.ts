@@ -1,4 +1,4 @@
-import {Records} from '../../../data/DataTransformer'
+import {Records} from '../../data/DataTransformer'
 
 const OFFSET = 50
 

@@ -34,7 +34,6 @@ export class DataTransformer {
         let years: number[] = []
         let records: Records = {}
 
-        // const json = await JSONLoader.loadJson(ServiceMode.TEMPERATURE)
         rawRecords.forEach((t) => {
             const storedDate = new Date(t.t)
             const storedUTCYear = storedDate.getUTCFullYear()
