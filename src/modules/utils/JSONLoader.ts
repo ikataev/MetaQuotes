@@ -1,15 +1,12 @@
 import {ServiceMode} from "../../models/UIModel"
 
 type Response = Array<{
-	t: string
-	v: number
+    t: string
+    v: number
 }>
 
 export class JSONLoader {
-
-	static async loadJson(jsonType: ServiceMode): Promise<Response> {
-		return fetch(`/${ServiceMode[jsonType]}.json`)
-			.then(response => response.json())
-	}
-
+    static async loadJson(jsonType: ServiceMode): Promise<Response> {
+        return fetch(`/${ServiceMode[jsonType]}.json`).then((response) => response.json())
+    }
 }

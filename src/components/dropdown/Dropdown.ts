@@ -1,37 +1,37 @@
 import * as Style from "./Dropdown.less"
 
-export const Dropdown = (onChange: (value: number) => void, values?: Array<number>, selected?: number) => {
-	const dropdown = document.createElement('select')
-	const setValues = (_values: Array<string | number>, _selected: string | number) => {
-		dropdown.innerHTML = ''
+export type DropdownValueChanged = (value: number) => void
+export type DropdownSetValuesCallback = (values: number[], selected: number) => void
 
-		_values.forEach((value, index) => {
-			// if (index > 100) {
-			// 	return
-			// }
+export type DropdownResponse = {
+    component: HTMLSelectElement
+    setValues: DropdownSetValuesCallback
+}
 
-			const option = document.createElement('option')
+export const Dropdown = (onChange: DropdownValueChanged, values?: number[], selected?: number): DropdownResponse => {
+    const dropdown = document.createElement("select")
+    const setValues = (_values: number[], _selected: number) => {
+        dropdown.innerHTML = ""
 
-			option.value = value as string
-			option.textContent = value as string
-			option.selected = value === _selected
+        _values.forEach((value, index) => {
+            const option = document.createElement("option")
 
-			dropdown.appendChild(option)
-		})
-	}
+            option.value = value.toString()
+            option.textContent = value.toString()
+            option.selected = value === _selected
 
-	dropdown.className = Style.dropdown
-	dropdown.addEventListener('change', () => {
-		onChange(parseInt(dropdown.value))
-	})
+            dropdown.appendChild(option)
+        })
+    }
 
-	// dropdown.addEventListener('scroll', (event) => {
-	// 	console.log('scroll', event)
-	// })
+    dropdown.className = Style.dropdown
+    dropdown.addEventListener("change", () => {
+        onChange(parseInt(dropdown.value))
+    })
 
-	if (values?.length) {
-		setValues(values, selected)
-	}
+    if (values?.length) {
+        setValues(values, selected)
+    }
 
-	return {component: dropdown, setValues}
+    return {component: dropdown, setValues}
 }

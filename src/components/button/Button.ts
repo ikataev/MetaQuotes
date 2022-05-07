@@ -1,12 +1,14 @@
 import * as Style from "./Button.less"
 
-export const Button = (title: string, onClick: (event: MouseEvent) => void): HTMLButtonElement => {
-	const button = document.createElement('button')
+export type ButtonClicked = (event: MouseEvent) => void
 
-	button.type = 'button'
-	button.innerText = title
-	button.className = Style.button
-	button.addEventListener('click', (event: MouseEvent) => onClick(event))
+export const Button = (title: string, onClick: ButtonClicked): HTMLButtonElement => {
+    const button = document.createElement("button")
 
-	return button
+    button.type = "button"
+    button.innerText = title
+    button.className = Style.button
+    button.addEventListener("click", (event: MouseEvent) => onClick(event))
+
+    return button
 }

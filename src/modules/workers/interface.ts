@@ -1,5 +1,1 @@
-interface IndexedDBWorker extends Worker {
-
-
-
-}
+interface IndexedDBWorker extends Worker {}

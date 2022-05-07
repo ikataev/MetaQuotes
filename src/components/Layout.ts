@@ -1,6 +1,6 @@
 import {Caption} from "./caption/Caption"
-import {Button} from "./button/Button"
-import {Dropdown} from "./dropdown/Dropdown"
+import { Button, ButtonClicked } from './button/Button'
+import { Dropdown, DropdownSetValuesCallback, DropdownValueChanged } from './dropdown/Dropdown'
 import * as Style from "./Layout.less"
 import {Canvas} from "./canvas/Canvas"
 
@@ -26,30 +26,43 @@ const tpl = `
 	</div>
 `
 
+export type LayoutResponse = {
+    component: HTMLDivElement
+    canvas: HTMLCanvasElement
+
+    setStartDropdownValues: DropdownSetValuesCallback
+    setEndDropdownValues: DropdownSetValuesCallback
+}
+
 export const Layout = (
-	onTemperatureButtonClicked: () => void,
-	onPrecipitationButtonClicked: () => void,
-	onStartDropdownChanged: (value: number) => void,
-	onEndDropdownChanged: (value: number) => void,
-) => {
-	const caption = Caption('Weather service archive')
-	const temperatureButton = Button('Temperature', onTemperatureButtonClicked)
-	const precipitationButton = Button('Precipitation', onPrecipitationButtonClicked)
-	const {component: startDropdown, setValues: setStartDropdownValues} = Dropdown(onStartDropdownChanged)
-	const {component: endDropdown, setValues: setEndDropdownValues} = Dropdown(onEndDropdownChanged)
-	const canvas = Canvas('canvas', 400, 265)
+    onTemperatureButtonClicked: ButtonClicked,
+    onPrecipitationButtonClicked: ButtonClicked,
+    onStartDropdownChanged: DropdownValueChanged,
+    onEndDropdownChanged: DropdownValueChanged
+): LayoutResponse => {
+    const caption = Caption("Weather service archive")
+    const temperatureButton = Button("Temperature", onTemperatureButtonClicked)
+    const precipitationButton = Button("Precipitation", onPrecipitationButtonClicked)
+    const {component: startDropdown, setValues: setStartDropdownValues} = Dropdown(onStartDropdownChanged)
+    const {component: endDropdown, setValues: setEndDropdownValues} = Dropdown(onEndDropdownChanged)
+    const canvas = Canvas("canvas", 400, 265)
 
-	const layout = document.createElement('div')
+    const layout = document.createElement("div")
 
-	layout.innerHTML = tpl
-	layout.className = `${Style.flexColumn} ${Style.layout}`
+    layout.innerHTML = tpl
+    layout.className = `${Style.flexColumn} ${Style.layout}`
 
-	layout.querySelector('#caption').replaceWith(caption)
-	layout.querySelector('#temperature-button').replaceWith(temperatureButton)
-	layout.querySelector('#precipitation-button').replaceWith(precipitationButton)
-	layout.querySelector('#start-dropdown').replaceWith(startDropdown)
-	layout.querySelector('#end-dropdown').replaceWith(endDropdown)
-	layout.querySelector('#canvas').replaceWith(canvas)
+    layout.querySelector("#caption").replaceWith(caption)
+    layout.querySelector("#temperature-button").replaceWith(temperatureButton)
+    layout.querySelector("#precipitation-button").replaceWith(precipitationButton)
+    layout.querySelector("#start-dropdown").replaceWith(startDropdown)
+    layout.querySelector("#end-dropdown").replaceWith(endDropdown)
+    layout.querySelector("#canvas").replaceWith(canvas)
 
-	return {layout, setStartDropdownValues, setEndDropdownValues, canvas}
+    return {
+        component: layout,
+        canvas,
+        setStartDropdownValues,
+        setEndDropdownValues,
+    }
 }

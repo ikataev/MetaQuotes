@@ -1,7 +1,7 @@
 export const Caption = (text: string): HTMLHeadingElement => {
-	const caption = document.createElement('h1')
+    const caption = document.createElement("h1")
 
-	caption.innerText = text
+    caption.innerText = text
 
-	return caption
+    return caption
 }
