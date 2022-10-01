@@ -8,8 +8,7 @@ import {UIController} from './modules/ui/UIController'
 import {UIModel} from './modules/ui/UIModel'
 import './style.less'
 
-const dbProvider = new IndexedDBProvider('MetaQuotes')
-    .onUpgradeNeeded(DataHelper.onUpgradeNeeded)
+const dbProvider = new IndexedDBProvider('MetaQuotes').onUpgradeNeeded(DataHelper.onUpgradeNeeded)
 
 const dataProvider = new DataProvider(dbProvider)
 
@@ -30,6 +29,6 @@ uiController.setCanvasController(canvasController)
 uiController.setStartDropdownCallback(setStartDropdownValues)
 uiController.setEndDropdownCallback(setEndDropdownValues)
 
-document.getElementsByTagName('body')[0].appendChild(component)
+document.body.appendChild(component)
 
 uiController.init()

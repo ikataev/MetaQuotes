@@ -32,7 +32,11 @@ export class CanvasController {
     async onUIChanged(uiModel: IUIModelReadonly) {
         console.info('[CanvasController] onUIChanged')
         const {transformedRecords} = await this.dataProvider.get(uiModel.mode)
-        const {records, minValue, maxValue} = DataHelper.extractRange(transformedRecords.records, uiModel.startYear, uiModel.endYear)
+        const {records, minValue, maxValue} = DataHelper.extractRange(
+            transformedRecords.records,
+            uiModel.startYear,
+            uiModel.endYear,
+        )
 
         this.initYAxisVisual()
         this.initYAxisPointsVisuals(minValue, maxValue)

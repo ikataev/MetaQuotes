@@ -6,8 +6,7 @@ export class IndexedDBProvider {
 
     private upgradeNeededCallback = noop
 
-    constructor(private name: string, private version = 1) {
-    }
+    constructor(private name: string, private version = 1) {}
 
     onUpgradeNeeded(callback: (database: IDBDatabase) => Promise<void>) {
         this.upgradeNeededCallback = callback
@@ -29,7 +28,7 @@ export class IndexedDBProvider {
                 resolve(database)
             })
 
-            this.request.addEventListener('error', event => {
+            this.request.addEventListener('error', (event) => {
                 reject(event.target)
             })
 
