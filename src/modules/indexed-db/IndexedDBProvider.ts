@@ -1,47 +1,46 @@
+const noop = (...args: unknown[]) => Promise.resolve()
+
 export class IndexedDBProvider {
-    private database: IDBOpenDBRequest
+    private request: IDBOpenDBRequest
+    private database: IDBDatabase
 
-    constructor(private name: string, private version = 1) {}
+    private upgradeNeededCallback = noop
 
-    static getData(dbName: string, tableName: string) {}
+    constructor(private name: string, private version = 1) {
+    }
 
-    openDatabase(): IDBOpenDBRequest {
-        if (!this.database) {
-            this.database = window.indexedDB.open(this.name, this.version)
+    onUpgradeNeeded(callback: (database: IDBDatabase) => Promise<void>) {
+        this.upgradeNeededCallback = callback
+        return this
+    }
 
-            this.database.addEventListener('upgradeneeded', (event: IDBVersionChangeEvent) =>
-                this.onUpgradeNeeded(event),
-            )
-            this.database.addEventListener('error', (event: Event) => this.onOpenFailed(event))
-            this.database.addEventListener('success', (event: Event) => this.onOpenSuccess(event))
+    async open(): Promise<IDBDatabase> {
+        if (this.request) {
+            return Promise.resolve(this.database)
         }
 
-        return this.database
-    }
+        return new Promise((resolve, reject) => {
+            this.request = indexedDB.open(this.name, this.version)
 
-    openTable(tableName: string) {}
+            this.request.addEventListener('success', (event: any) => {
+                const database = event.target.result as IDBDatabase
 
-    putValue(tableName: string, value: string) {
-        // const transaction = this.database.transaction(tableName, 'readwrite')
-        // const store = transaction.objectStore(tableName)
-        // store.add()
-    }
+                this.database = database
+                resolve(database)
+            })
 
-    putValues(tableName: string, values: string[]) {}
+            this.request.addEventListener('error', event => {
+                reject(event.target)
+            })
 
-    getValues(tableName: string) {}
+            this.request.addEventListener('upgradeneeded', (event: any) => {
+                const database = event.target.result
 
-    clearTable(tableName: string) {}
-
-    private onOpenFailed(event: Event) {
-        console.log('[IndexedDBProvider] onOpenFailed', event, this.database)
-    }
-
-    private onOpenSuccess(event: Event) {
-        console.log('[IndexedDBProvider] onOpenSuccess', event, this.database)
-    }
-
-    private onUpgradeNeeded(event: IDBVersionChangeEvent) {
-        console.log('[IndexedDBProvider] onOpenSuccess', event, this.database)
+                this.database = database
+                this.upgradeNeededCallback(database)
+                    .then(() => resolve(database))
+                    .catch(reject)
+            })
+        })
     }
 }

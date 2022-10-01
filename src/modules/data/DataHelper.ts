@@ -1,8 +1,14 @@
+import {ServiceMode} from '../ui/UIModel'
 import {Records, Response, YearObject} from './DataTransformer'
 
 type ExtractedRangeResponse = Pick<Response, 'records'> & {
     minValue: number
     maxValue: number
+}
+
+export const DB_KEY = {
+    [ServiceMode.TEMPERATURE]: 'temperature',
+    [ServiceMode.PRECIPITATION]: 'precipitation',
 }
 
 export class DataHelper {
@@ -31,5 +37,38 @@ export class DataHelper {
         })
 
         return {records: extractedRecords, minValue, maxValue}
+    }
+
+    static onUpgradeNeeded(database: IDBDatabase): Promise<any> {
+        console.info('onUpgradeNeeded', database)
+        return new Promise((resolve, reject) => {
+            Promise.all([
+                DataHelper.makeScheme(database, DB_KEY[ServiceMode.TEMPERATURE]),
+                DataHelper.makeScheme(database, DB_KEY[ServiceMode.PRECIPITATION]),
+            ]).then(
+                () => resolve(database),
+                reject,
+            )
+        })
+    }
+
+    private static makeScheme(database: IDBDatabase, name: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const objectStore = database.createObjectStore(name, {
+                // keyPath: 't',
+                autoIncrement: true,
+            })
+
+            objectStore.createIndex('t', 't', {unique: true})
+            objectStore.createIndex('v', 'v', {unique: false})
+
+            objectStore.transaction.addEventListener('complete', event => {
+                resolve()
+            })
+
+            objectStore.transaction.addEventListener('error', event => {
+                reject(event)
+            })
+        })
     }
 }

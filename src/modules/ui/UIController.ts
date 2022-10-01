@@ -9,7 +9,7 @@ export class UIController {
     private _setStartDropdownCallback: DropdownSetValuesCallback
     private _setEndDropdownCallback: DropdownSetValuesCallback
 
-    constructor(private uiModel: UIModel) {}
+    constructor(private uiModel: UIModel, private dataProvider: DataProvider) {}
 
     async init() {
         await this.onTemperatureButtonClicked()
@@ -46,7 +46,7 @@ export class UIController {
     }
 
     private async onButtonClicked() {
-        const {transformedRecords} = await DataProvider.get(this.uiModel.mode)
+        const {transformedRecords} = await this.dataProvider.get(this.uiModel.mode)
         const {years, startYear, endYear} = transformedRecords
 
         this.uiModel.setYears(years)

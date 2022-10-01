@@ -9,6 +9,7 @@ import {PLOT_AXIS_OFFSET, PLOT_OFFSET, VERTICAL_AXIS_POINT_DASH_SIZE, VERTICAL_A
 
 export class CanvasController {
     private readonly canvasModel: CanvasModel
+    private readonly dataProvider: DataProvider
     private readonly canvas: HTMLCanvasElement
     private readonly context: CanvasRenderingContext2D
 
@@ -19,8 +20,9 @@ export class CanvasController {
     private yAxisVisual: CanvasLine
     private yAxisValuesVisual: CanvasYAxis[]
 
-    constructor(canvasModel: CanvasModel, canvas: HTMLCanvasElement) {
+    constructor(canvasModel: CanvasModel, canvas: HTMLCanvasElement, dataProvider: DataProvider) {
         this.canvasModel = canvasModel
+        this.dataProvider = dataProvider
         this.canvas = canvas
         this.context = canvas.getContext('2d')
         this.canvasModel.setSize(canvas.width, canvas.height)
@@ -29,7 +31,7 @@ export class CanvasController {
     // Instead of EventBus implementation, will call method directly
     async onUIChanged(uiModel: IUIModelReadonly) {
         console.info('[CanvasController] onUIChanged')
-        const {transformedRecords} = await DataProvider.get(uiModel.mode)
+        const {transformedRecords} = await this.dataProvider.get(uiModel.mode)
         const {records, minValue, maxValue} = DataHelper.extractRange(transformedRecords.records, uiModel.startYear, uiModel.endYear)
 
         this.initYAxisVisual()

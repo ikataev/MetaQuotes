@@ -35,8 +35,8 @@ of temperature and precipitation changes for the last 120 years
 
 -   **[Done]** Application consists of two parts - selection of data type and graphic with visualisation
 -   **[Done]** **Temperature** data should be visualized by default
--   Data should be stored in IndexedDB, in two tables: temperature and precipitation
--   Each data for a day should be stored as an independent object/record in IndexedDb
+-   **[Done]** Data should be stored in IndexedDB, in two tables: temperature and precipitation
+-   **[Done]** Each data for a day should be stored as an independent object/record in IndexedDb
 -   **[Done]** Data should be requested from the server if it doesn't found in IndexedDB
 -   **[Done]** Each portion of data (temperature, precipitation) should be requested independently
 -   **[Done]** Backend could be implemented as a simple webserver or any bundler (Webpack/Rollup/Vite/Snowpack)

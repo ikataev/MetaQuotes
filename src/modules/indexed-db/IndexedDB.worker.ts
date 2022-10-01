@@ -7,5 +7,5 @@ type Data = {
 }
 
 addEventListener('message', (message) => {
-    console.log('IndexedDBWorker', message)
+    // console.log('IndexedDBWorker', message)
 })

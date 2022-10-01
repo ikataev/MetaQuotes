@@ -1,5 +1,7 @@
+import {IndexedDBProvider} from '../indexed-db/IndexedDBProvider'
 import {JSONLoader} from '../json-loader/JSONLoader'
 import {ServiceMode} from '../ui/UIModel'
+import {DB_KEY} from './DataHelper'
 import {DataTransformer, Response as DataTransformedResponse} from './DataTransformer'
 
 export type RawRecord = {
@@ -12,36 +14,61 @@ type Response = {
     transformedRecords: DataTransformedResponse
 }
 
-const CACHE: { [x: string]: Response } = {}
-
 export class DataProvider {
 
-    static async get(serviceMode: ServiceMode): Promise<Response> {
+    private dbProvider: IndexedDBProvider
+
+    constructor(dbProvider: IndexedDBProvider) {
+        this.dbProvider = dbProvider
+    }
+
+    async get(serviceMode: ServiceMode): Promise<Response> {
         if (!ServiceMode[serviceMode]) {
             throw Error(`Unexpected serviceMode, ${serviceMode}`)
         }
 
-        if (!CACHE[serviceMode]) {
-            const rawRecords = await this.loadData(serviceMode)
-            const transformedRecords = DataTransformer.transform(rawRecords)
+        let rawRecords = await this.loadDataFromIndexedDB(serviceMode)
 
-            CACHE[serviceMode] = {rawRecords, transformedRecords}
+        if (!rawRecords || !rawRecords.length) {
+            rawRecords = await this.loadData(serviceMode)
+            await this.uploadDataIntoIndexedDB(serviceMode, rawRecords)
         }
 
-        return CACHE[serviceMode]
+        const transformedRecords = DataTransformer.transform(rawRecords)
+
+        return {rawRecords, transformedRecords}
     }
 
-    // todo Need to implement IndexedDB
-    private static async loadData(mode: ServiceMode): Promise<RawRecord[]> {
-        // let records = IndexedDBProvider.get()
+    private async loadData(mode: ServiceMode): Promise<RawRecord[]> {
         let records: RawRecord[] = []
 
         if (!records || !records.length) {
             records = await JSONLoader.loadJson(mode)
-            // IndexedDBProvider.save(records)
         }
 
         return records
+    }
+
+    private async uploadDataIntoIndexedDB(serviceMode: ServiceMode, records: RawRecord[]) {
+        const database = await this.dbProvider.open()
+        const transaction = database.transaction([DB_KEY[serviceMode]], 'readwrite')
+        const store = transaction.objectStore(DB_KEY[serviceMode])
+
+        records.forEach(record => store.add(record))
+    }
+
+    private async loadDataFromIndexedDB(serviceMode: ServiceMode): Promise<RawRecord[]> {
+        const database = await this.dbProvider.open()
+        const transaction = database.transaction([DB_KEY[serviceMode]], 'readonly')
+        const objectStore = transaction.objectStore(DB_KEY[serviceMode])
+
+        return new Promise((resolve, reject) => {
+            const request = objectStore.getAll()
+
+            request.addEventListener('success', (event: any) => {
+                resolve(event.target.result)
+            })
+        })
     }
 
 }
