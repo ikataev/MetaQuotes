@@ -1,7 +1,9 @@
 import {ServiceMode} from '../ui/UIModel'
-import {Records, Response, YearObject} from './DataTransformer'
+import {RawRecord} from './DataProvider'
+import {Record, Records, Response, YearObject} from './DataTransformer'
 
 type ExtractedRangeResponse = Pick<Response, 'records'> & {
+    count: number
     minValue: number
     maxValue: number
 }
@@ -19,9 +21,18 @@ export class DataHelper {
         })
     }
 
+    static forEachMonth(yearObject: YearObject, callback: (days: Record[], monthKey: string, monthKeyAsNumber: number) => void) {
+        Object.keys(yearObject).forEach(monthKey => {
+            callback(yearObject[monthKey], monthKey, parseInt(monthKey))
+        })
+    }
+
     static extractRange(records: Records, startYear: number, endYear: number): ExtractedRangeResponse {
         const extractedRecords: Records = {}
-        let maxValue = -Infinity, minValue = Infinity
+
+        let count = 0
+        let maxValue = -Infinity
+        let minValue = Infinity
 
         DataHelper.forEachYear(records, (yearObject, yearKey, yearKeyAsNumber) => {
             if (yearKeyAsNumber >= startYear && yearKeyAsNumber <= endYear) {
@@ -30,45 +41,42 @@ export class DataHelper {
                 Object.keys(records[yearKey]).forEach(monthKey => {
                     const values = records[yearKey][monthKey].map(day => day.value)
 
+                    count += values.length
                     minValue = Math.min(minValue, ...values)
                     maxValue = Math.max(maxValue, ...values)
                 })
             }
         })
 
-        return {records: extractedRecords, minValue, maxValue}
+        return {records: extractedRecords, minValue, maxValue, count}
     }
 
-    static onUpgradeNeeded(database: IDBDatabase): Promise<any> {
-        console.info('onUpgradeNeeded', database)
-        return new Promise((resolve, reject) => {
-            Promise.all([
-                DataHelper.makeScheme(database, DB_KEY[ServiceMode.TEMPERATURE]),
-                DataHelper.makeScheme(database, DB_KEY[ServiceMode.PRECIPITATION]),
-            ]).then(
-                () => resolve(database),
-                reject,
-            )
+    static extractRawRange(rawRecords: RawRecord[], startYear: number, endYear: number) {
+        const years = new Set()
+        const series = {
+            values: [] as number[],
+            minValue: Infinity,
+            maxValue: -Infinity,
+        }
+
+        rawRecords.forEach((t) => {
+            const storedDate = new Date(t.t)
+            const storedUTCYear = storedDate.getUTCFullYear()
+            const storedValue = t.v
+
+            if (storedUTCYear < startYear || storedUTCYear > endYear) {
+                return
+            }
+
+            years.add(storedUTCYear)
+            series.values.push(storedValue)
+            series.minValue = Math.min(series.minValue, storedValue)
+            series.maxValue = Math.max(series.maxValue, storedValue)
         })
-    }
 
-    private static makeScheme(database: IDBDatabase, name: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            const objectStore = database.createObjectStore(name, {
-                // keyPath: 't',
-                autoIncrement: true,
-            })
-
-            objectStore.createIndex('t', 't', {unique: true})
-            objectStore.createIndex('v', 'v', {unique: false})
-
-            objectStore.transaction.addEventListener('complete', event => {
-                resolve()
-            })
-
-            objectStore.transaction.addEventListener('error', event => {
-                reject(event)
-            })
-        })
+        return {
+            years: Array.from(years),
+            series,
+        }
     }
 }
