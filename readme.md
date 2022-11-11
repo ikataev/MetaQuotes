@@ -33,19 +33,19 @@ of temperature and precipitation changes for the last 120 years
 
 ### Technical requirements
 
--   **[Done]** Application consists of two parts - selection of data type and graphic with visualisation
--   **[Done]** **Temperature** data should be visualized by default
--   **[Done]** Data should be stored in IndexedDB, in two tables: temperature and precipitation
--   **[Done]** Each data for a day should be stored as an independent object/record in IndexedDb
--   **[Done]** Data should be requested from the server if it doesn't found in IndexedDB
--   **[Done]** Each portion of data (temperature, precipitation) should be requested independently
+- **[Done]** Application consists of two parts - selection of data type and graphic with visualisation
+- **[Done]** **Temperature** data should be visualized by default
+- **[Done]** Data should be stored in IndexedDB, in two tables: temperature and precipitation
+- **[Done]** Each data for a day should be stored as an independent object/record in IndexedDb
+- **[Done]** Data should be requested from the server if it doesn't found in IndexedDB
+- **[Done]** Each portion of data (temperature, precipitation) should be requested independently
 - **[Done]** Backend could be implemented as a simple webserver or any bundler (Webpack/Rollup/Vite/Snowpack)
 - **[Done]** All records should be visualised by default (from 1881 to 2006 years, 46020 records)
 - **[Done]** There shouldn't be any calculations on backend
--   **[Done]** It is possible to change visualisation period by the interface
--   **[Done]** Use html canvas element for data visualisation
--   While calculation and drawing interface shouldn't be frozen
--   Allowed to calculate anything inside workers
+- **[Done]** It is possible to change visualisation period by the interface
+- **[Done]** Use html canvas element for data visualisation
+- While calculation and drawing interface shouldn't be frozen
+- Allowed to calculate anything inside workers
 
 ### Additional
 
